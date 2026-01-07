@@ -31,9 +31,10 @@ while True:
             if t!="":
                 i+=1
                 print(f"{i}. {t}")
+                print("complet delete!!")
     if num==3:
         num=int(input("enter task number to delete: "))
-        print("")
+        print("task")
         num+=1
         task.pop(num-1)
     if num==4:
