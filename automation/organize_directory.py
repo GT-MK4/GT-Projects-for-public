@@ -1,42 +1,48 @@
 import os
 import shutil
+
+# The directory of the script
 current_dir = os.path.dirname(os.path.realpath(__file__))
-print("welcome to GT organize.py script")
-for filename in os.listdir(current_dir):
-    if filename.endswith((".png" ,".jpeg" ,".jpg")):
-        if not os.path.exists("images"):
-           os.mkdir("images")
-        shutil.copy(filename , "images")
-        os.remove(filename)
-        print("images done")
-    if filename.endswith((".py" ,".css" ,".html","js")):
-        if not os.path.exists("codes"):
-           os.mkdir("codes")
-        shutil.copy(filename , "codes")
-        os.remove(filename)
-        print("codes done")
-    if filename.endswith((".mp4" ,".webm" ,".mkv")):
-        if not os.path.exists("videos"):
-           os.mkdir("videos")
-        shutil.copy(filename , "videos")
-        os.remove(filename)
-        print("videos done")
-    if filename.endswith((".pdf" ,".word" ,".doc" ,".docx")):
-        if not os.path.exists("docs"):
-           os.mkdir("docs")
-        shutil.copy(filename , "docs")
-        os.remove(filename)
-        print("docs done")
-    if filename.endswith((".zip" ,".rar" ,".tar" ,".gz" ,".7z")):
-        if not os.path.exists("archives"):
-           os.mkdir("archives")
-        shutil.copy(filename , "archives")
-        os.remove(filename)
-        print("archives done")
-    if filename.endswith((".dmg" ,".exe" ,".msi" ,".pkg" ,".deb")):
-        if not os.path.exists("apps"):
-           os.mkdir("apps")
-        shutil.copy(filename , "apps")
-        os.remove(filename)
-        print("apps done")
-print("everything done")
+script_name = os.path.basename(__file__)
+
+print("Welcome to the GT organize.py script")
+
+# A dictionary to map directories to their file extensions
+# This makes it easy to add new file types in the future
+DIR_MAPPINGS = {
+    "images": (".png", ".jpeg", ".jpg"),
+    "videos": (".mp4", ".webm", ".mkv"),
+    "docs": (".pdf", ".doc", ".docx"),
+    "archives": (".zip", ".rar", ".tar", ".gz", ".7z"),
+    "apps": (".dmg", ".exe", ".msi", ".pkg", ".deb"),
+    "codes": (".py", ".css", ".html", ".js"),
+}
+
+def organize_files():
+    """Organizes files in the current directory based on their extension."""
+    for filename in os.listdir(current_dir):
+        # Skip the script itself and any directories
+        if filename == script_name or not os.path.isfile(os.path.join(current_dir, filename)):
+            continue
+
+        moved = False
+        for dest_folder, extensions in DIR_MAPPINGS.items():
+            if filename.lower().endswith(extensions):
+                # Create the destination folder if it doesn't exist
+                dest_path = os.path.join(current_dir, dest_folder)
+                if not os.path.exists(dest_path):
+                    os.makedirs(dest_path)
+                
+                # Move the file
+                src_path = os.path.join(current_dir, filename)
+                shutil.move(src_path, dest_path)
+                print(f"Moved '{filename}' to '{dest_folder}/'")
+                moved = True
+                break  # Stop checking once the file is moved
+        
+        if not moved:
+            print(f"Skipped '{filename}', no matching category.")
+
+if __name__ == "__main__":
+    organize_files()
+    print("\nDirectory organization complete.")
